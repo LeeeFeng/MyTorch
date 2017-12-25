@@ -1,7 +1,13 @@
 package com.example.lee.mytorch;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
@@ -18,6 +24,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     private CameraManager mCameraManager;
@@ -26,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     public Timer mTimer;
     int mInt;
     boolean flag=false;
+
     @Override
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnOn=(Button)findViewById(R.id.lightOn);
         Button btnOff=(Button)findViewById(R.id.lightOff);
         Button btnSOS=(Button)findViewById(R.id.lightSOS);
+        Button btnJump=(Button)findViewById(R.id.jump);
+
         mCameraManager=(CameraManager)getSystemService(Context.CAMERA_SERVICE);
 
 
@@ -45,17 +57,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error",e.getMessage());
         }
 
+
+
         btnSOS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SOS();
-             /* if(!flag){
-                  flag=true;
-                  SOS();
-              }else{
-                  flag=false;
-                  lightSwitch(true);
-              }*/
             }
         });
 
@@ -72,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 lightSwitch(true);
             }
         });
+
+        btnJump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(MainActivity.this,SensorActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void SOS(){
@@ -92,31 +109,8 @@ public class MainActivity extends AppCompatActivity {
         },0);
     }
 
-  /*  private void SOS(){
-        for(mInt=0;;mInt=mInt==0?1:0){
-            switch (mInt){
-                case 1:
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            lightSwitch(false);
-                        }
-                    },1000);
-                    break;
-                case 0:
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            lightSwitch(true);
-                        }
-                    },3000);
-                    break;
-            }
-        }
-    }*/
-
     //灯光开关控制
-    private void lightSwitch(final boolean lightStatus) {
+    protected void lightSwitch(final boolean lightStatus) {
         if(lightStatus){
                 try{
                     mCameraManager.setTorchMode("0",false);
@@ -132,5 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    //加速度控制开关
 
 }

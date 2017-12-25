@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,13 +14,24 @@
 
     <Button
         android:id="@+id/lightOff"
+        android:layout_toRightOf="@+id/lightOn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Off" />
     <Button
         android:id="@+id/lightSOS"
+        android:layout_toRightOf="@id/lightOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SOS"/>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/jump"
+        android:layout_below="@+id/lightOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SENSOR"/>
+
+
+</RelativeLayout>
+
