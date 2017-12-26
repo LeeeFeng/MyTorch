@@ -22,18 +22,18 @@ import android.widget.Button;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-
+import java.util.concurrent.locks.Lock;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private CameraManager mCameraManager;
-    private Camera mCamera=null;
+    private Camera mCamera = null;
     public TimerTask mTimerTask;
     public Timer mTimer;
-    int mInt;
-    boolean flag=false;
+    int mInt=0;
+
+    MyThread updateThread=new MyThread();
 
     @Override
 
@@ -41,28 +41,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btnOn=(Button)findViewById(R.id.lightOn);
-        Button btnOff=(Button)findViewById(R.id.lightOff);
-        Button btnSOS=(Button)findViewById(R.id.lightSOS);
-        Button btnJump=(Button)findViewById(R.id.jump);
+        Button btnOn = (Button) findViewById(R.id.lightOn);
+        Button btnOff = (Button) findViewById(R.id.lightOff);
+        Button btnSOS = (Button) findViewById(R.id.lightSOS);
+        Button btnJump = (Button) findViewById(R.id.jump);
 
-        mCameraManager=(CameraManager)getSystemService(Context.CAMERA_SERVICE);
-
+        mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        final Thread thread=new Thread(updateThread);
 
         try {
-            String[] cameraList=mCameraManager.getCameraIdList();
-            for(String str:cameraList){
+            String[] cameraList = mCameraManager.getCameraIdList();
+            for (String str : cameraList) {
             }
-        }catch (CameraAccessException e){
-            Log.e("error",e.getMessage());
+        } catch (CameraAccessException e) {
+            Log.e("error", e.getMessage());
         }
-
 
 
         btnSOS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SOS();
+                //SOS();
+                if(updateThread.flag==false){
+                    updateThread.flag=true;
+                    updateThread.start();
+                }
+                else{
+                    updateThread.flag=false;
+                }
             }
         });
 
@@ -83,45 +89,65 @@ public class MainActivity extends AppCompatActivity {
         btnJump.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
-                intent.setClass(MainActivity.this,SensorActivity.class);
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SensorActivity.class);
                 startActivity(intent);
             }
         });
 
     }
 
-    private void SOS(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for(mInt=0;;mInt=mInt==0?1:0){
-                    switch (mInt) {
-                        case 1:
-                            lightSwitch(false);
-                            break;
-                        case 0:
-                            lightSwitch(true);
-                            break;
+//    private void SOS(){
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                for(mInt=0;;mInt=mInt==0?1:0){
+//                    switch (mInt) {
+//                        case 1:
+//                            lightSwitch(false);
+//                            break;
+//                        case 0:
+//                            lightSwitch(true);
+//                            break;
+//                    }
+//                }
+//            }
+//        },0);
+//    }
+
+   public class MyThread extends Thread{
+        boolean flag = false;
+
+
+        public void run(){
+
+                        while (flag) {
+                            mInt = mInt == 0 ? 1 : 0;
+                            switch (mInt) {
+                                case 1:
+                                    lightSwitch(false);
+                                    break;
+                                case 0:
+                                    lightSwitch(true);
+                                    break;
+                            }
+                        }
                     }
-                }
-            }
-        },0);
+
     }
 
     //灯光开关控制
     protected void lightSwitch(final boolean lightStatus) {
-        if(lightStatus){
-                try{
-                    mCameraManager.setTorchMode("0",false);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-        }
-        else{
-            try{
-                mCameraManager.setTorchMode("0",true);
-            }catch (Exception e){
+        if (lightStatus) {
+            try {
+                mCameraManager.setTorchMode("0", false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                mCameraManager.setTorchMode("0", true);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -85,9 +85,9 @@ public class SensorActivity extends Activity implements SensorEventListener, Vie
         float xValue = sensorEvent.values[0];// Acceleration minus Gx on the x-axis
         float yValue = sensorEvent.values[1];//Acceleration minus Gy on the y-axis
         float zValue = sensorEvent.values[2];//Acceleration minus Gz on the z-axis
-//        float xValueNew = sensorEvent.values[0];// Acceleration minus Gx on the x-axis
-//        float yValueNew = sensorEvent.values[1];//Acceleration minus Gy on the y-axis
-//        float zValueNew = sensorEvent.values[2];//Acceleration minus Gz on the z-axis
+//      float xValueNew = sensorEvent.values[0];// Acceleration minus Gx on the x-axis
+//      float yValueNew = sensorEvent.values[1];//Acceleration minus Gy on the y-axis
+//      float zValueNew = sensorEvent.values[2];//Acceleration minus Gz on the z-axis
 
 //      double delta= Math.sqrt(Math.pow((xValue-xValueNew),2)+Math.pow((yValue-yValueNew),2));
         xValue=Math.abs(xValue);
